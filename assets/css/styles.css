@@ -1,0 +1,307 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #111; /* Consistent dark background */
+    color: #f0f0f0; /* Light text color for readability */
+    line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+    background-color: #222; /* Dark header background */
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #444;
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: #ffd700; /* Gold for luxury */
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+
+header nav a {
+    color: #ffd700;
+    margin: 0 15px;
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+header nav a:hover {
+    color: #fff;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 2em 1em;
+    background: #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.hero img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.hero h2 {
+    font-size: 2.2em;
+    color: #ffd700;
+    margin-top: 20px;
+}
+
+/* Service Boxes */
+.service-boxes, .experience-boxes {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #222;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.service-boxes h2, .experience-boxes h2 {
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.service-boxes .service-box, .experience-boxes .service-box {
+    display: inline-block;
+    width: 300px;
+    margin: 15px;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-boxes .service-box:hover, .experience-boxes .service-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.service-box img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-bottom: 2px solid #444;
+}
+
+.service-box h3 {
+    margin: 15px;
+    font-size: 1.4em;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Medium Image Section */
+.medium-image {
+    padding: 20px;
+    text-align: center;
+}
+
+.medium-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Affiliate Section */
+.affiliate {
+    text-align: center;
+    padding: 20px;
+    background-color: #222;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.affiliate h2 {
+    color: #ffd700;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.affiliate a img {
+    margin-top: 10px;
+    max-width: 100%;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    color: #ccc;
+    text-align: center;
+    padding: 20px;
+    border-top: 2px solid #444;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .service-boxes .service-box, .experience-boxes .service-box {
+        width: 45%;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-boxes .service-box, .experience-boxes .service-box {
+        width: 100%;
+    }
+
+    .service-box img {
+        height: 150px;
+    }
+}
+/* Luxury Destinations Section */
+.luxury-destinations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between boxes */
+    padding: 40px;
+    background-color: #222; /* Matches the dark theme */
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.destination {
+    background-color: #333; /* Dark box background */
+    border: 1px solid #444; /* Subtle border */
+    border-radius: 10px;
+    overflow: hidden; /* Ensures content stays within the box */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for a luxury feel */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.destination:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+.destination img {
+    width: 100%; /* Ensures image fills the box */
+    height: 200px; /* Fixed height for consistent layout */
+    object-fit: contain; /* Ensures image fits nicely */
+    border-bottom: 2px solid #444; /* Divider line under image */
+}
+
+.destination h2 {
+    margin: 15px;
+    font-size: 1.4em;
+    color: #ffd700; /* Gold color for luxury feel */
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.luxury-destinations a {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Inherit text color */
+}
+h1 {
+    text-align: center; /* Centers the text horizontally */
+    margin: 20px 0; /* Adds some vertical spacing */
+    color: #ffd700; /* Matches the luxury theme */
+}
+.content p {
+    text-align: center; /* Centers the text horizontally */
+    margin: 10px 0; /* Adds some vertical spacing */
+    color: #f0f0f0; /* Ensures readability on a dark background */
+    font-size: 1em; /* Adjusts font size for clarity */
+    line-height: 1.5; /* Improves readability by spacing out lines */
+}
+.main-image {
+    max-width: 80%; /* Ensures the image doesn't exceed 80% of the container's width */
+    height: auto; /* Maintains the aspect ratio */
+    display: block; /* Centers the image */
+    margin: 20px auto; /* Adds spacing and centers the image horizontally */
+    border-radius: 10px; /* Optional: Rounds the corners for a polished look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Optional: Adds a shadow for emphasis */
+}
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+#content {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+header {
+  background: #4CAF50;
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+}
+nav {
+  background: #333;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 1rem;
+}
+main {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem 0;
+}
