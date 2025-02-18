@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <title>Golf Courses in Thailand</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; }
+        .container { width: 80%; margin: 20px auto; }
+
+
+        .home-button { color: white; text-decoration: none; font-size: 16px; position: absolute; left: 20px; top: 15px; }
+
+        #map { height: 400px; border-radius: 5px; margin-bottom: 20px; }
+        .filters { display: flex; gap: 10px; margin-bottom: 10px; }
+        .filters input, .filters select { padding: 8px; font-size: 14px; }
+
+        .course { background: white; padding: 15px; margin-bottom: 10px; border-radius: 5px; display: flex; align-items: center; gap: 15px; }
+        .course h2 { margin: 0; color: #286181; }
+        .details { font-size: 14px; margin: 10px 0; }
+        .course-img { width: 120px; height: 80px; object-fit: cover; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="home-button">Home</a>
+        <h1>Top Golf Courses in Thailand</h1>
+    </header>
+
+    <div class="container">
+        <div id="map"></div>
+
+        <div class="filters">
+            <input type="text" id="search" placeholder="Search by name...">
+            <select id="location-filter">
+                <option value="">Filter by location</option>
+                <option value="Bangkok">Bangkok</option>
+                <option value="Hua Hin">Hua Hin</option>
+                <option value="Ayutthaya">Ayutthaya</option>
+                <option value="Chiang Mai">Chiang Mai</option>
+                <option value="Phuket">Phuket</option>
+                <option value="Pattaya">Pattaya</option>
+            </select>
+            <select id="condition-filter">
+                <option value="">Filter by condition</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Very Good">Very Good</option>
+            </select>
+            <select id="par-filter">
+                <option value="">Filter by par</option>
+                <option value="72">Par 72</option>
+                <option value="71">Par 71</option>
+            </select>
+        </div>
+
+        <div id="course-list"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Courses data
+    var courses = [
+        { name: "Ayodhya Links", location: "Ayutthaya", condition: "Excellent", par: 72, holes: 18, length: "7,500 yards", driving_range: "Yes", coords: [14.355, 100.567] },
+        { name: "Alpine Golf Club", location: "Bangkok", condition: "Very Good", par: 72, holes: 18, length: "7,000 yards", driving_range: "Yes", coords: [13.905, 100.617] },
+        { name: "Banyan Golf Club", location: "Hua Hin", condition: "Excellent", par: 72, holes: 18, length: "7,100 yards", driving_range: "Yes", coords: [12.552, 99.957] },
+        { name: "Black Mountain Golf Club", location: "Hua Hin", condition: "Excellent", par: 72, holes: 18, length: "7,300 yards", driving_range: "Yes", coords: [12.598, 99.871] },
+        { name: "Blue Canyon Country Club", location: "Phuket", condition: "Very Good", par: 72, holes: 18, length: "7,200 yards", driving_range: "Yes", coords: [8.108, 98.306] },
+        { name: "Chiang Mai Highlands Golf", location: "Chiang Mai", condition: "Excellent", par: 72, holes: 18, length: "7,400 yards", driving_range: "Yes", coords: [18.744, 99.262] },
+        { name: "Siam Country Club", location: "Pattaya", condition: "Excellent", par: 72, holes: 18, length: "7,450 yards", driving_range: "Yes", coords: [12.904, 100.897] },
+        { name: "Laguna Golf Phuket", location: "Phuket", condition: "Very Good", par: 71, holes: 18, length: "6,700 yards", driving_range: "No", coords: [8.017, 98.298] },
+        { name: "Royal Gems Golf City", location: "Bangkok", condition: "Excellent", par: 72, holes: 18, length: "7,200 yards", driving_range: "Yes", coords: [13.848, 100.401] },
+        { name: "Nikanti Golf Club", location: "Nakhon Pathom", condition: "Very Good", par: 72, holes: 18, length: "6,850 yards", driving_range: "Yes", coords: [13.844, 100.212] }
+    ];
+
+    // Display course list
+    function displayCourses(filteredCourses) {
+        let list = document.getElementById("course-list");
+        list.innerHTML = "";
+
+        filteredCourses.forEach(course => {
+            list.innerHTML += `
+                <div class="course">
+                    <img src="" alt="${course.name}" class="course-img">
+                    <div>
+                        <h2>${course.name}</h2>
+                        <p class="details">Location: ${course.location} | Condition: ${course.condition} | Par: ${course.par} | Holes: ${course.holes} | Length: ${course.length} | Driving Range: ${course.driving_range}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Initialize map
+    function initializeMap() {
+        var map = L.map('map').setView([13.8, 100.5], 7); // Set default view (center of Thailand)
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add markers for each golf course
+        courses.forEach(course => {
+            L.marker(course.coords).addTo(map)
+                .bindPopup(`<b>${course.name}</b><br>Location: ${course.location}`);
+        });
+    }
+
+    // Filter courses based on user input
+    function filterCourses() {
+        let searchQuery = document.getElementById("search").value.toLowerCase();
+        let locationFilter = document.getElementById("location-filter").value;
+        let conditionFilter = document.getElementById("condition-filter").value;
+        let parFilter = document.getElementById("par-filter").value;
+
+        let filtered = courses.filter(course => {
+            return (
+                (searchQuery === "" || course.name.toLowerCase().includes(searchQuery)) &&
+                (locationFilter === "" || course.location === locationFilter) &&
+                (conditionFilter === "" || course.condition === conditionFilter) &&
+                (parFilter === "" || course.par.toString() === parFilter)
+            );
+        });
+
+        displayCourses(filtered);
+    }
+
+    // Event listeners for filters
+    document.getElementById("search").addEventListener("input", filterCourses);
+    document.getElementById("location-filter").addEventListener("change", filterCourses);
+    document.getElementById("condition-filter").addEventListener("change", filterCourses);
+    document.getElementById("par-filter").addEventListener("change", filterCourses);
+
+    // Initialize map and display courses when the page loads
+    initializeMap();
+    displayCourses(courses);
+});
+
+
+    </script>
+</body>
+</html>

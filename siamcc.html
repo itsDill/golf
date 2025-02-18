@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapbox 3D Golf Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Replace with your token
+
+        // 📍 Step 1: Initialize Map
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/satellite-streets-v12',
+            center: [101.615, 14.708], // Replace with real GPS coordinates
+            zoom: 17, // Adjust zoom for close-up
+            pitch: 50, // Slight tilt for 3D effect
+            bearing: 0,
+            antialias: true
+        });
+
+        // 📍 Step 2: Add 3D Terrain
+        map.on('load', function () {
+            map.addSource('mapbox-dem', {
+                type: 'raster-dem',
+                url: 'mapbox://mapbox.terrain-rgb',
+                tileSize: 512,
+                maxzoom: 14
+            });
+            map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
+
+            // 🎯 Step 3: Overlay Your Screenshot as a Custom Image Layer
+            map.addSource('golf-overlay', {
+                type: 'image',
+                url: 'assets/images/golf-map.png', // Your Screenshot URL
+                coordinates: [
+                    [101.613, 14.710], // Top-left (longitude, latitude)
+                    [101.617, 14.710], // Top-right
+                    [101.617, 14.706], // Bottom-right
+                    [101.613, 14.706]  // Bottom-left
+                ]
+            });
+
+            map.addLayer({
+                id: 'golf-overlay',
+                source: 'golf-overlay',
+                type: 'raster',
+                paint: { 'raster-opacity': 0.8 }
+            });
+
+            // 📍 Step 4: Add Markers for Hole and Tee Box
+            new mapboxgl.Marker({ color: "blue" }) // Tee box
+                .setLngLat([101.614, 14.709]) // Replace with real coordinates
+                .addTo(map);
+
+            new mapboxgl.Marker({ color: "red" }) // Hole
+                .setLngLat([101.616, 14.707]) // Replace with real coordinates
+                .addTo(map);
+        });
+    </script>
+</body>
+</html>
