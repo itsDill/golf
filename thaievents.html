@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <title>Golf Events in Thailand</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; }
+        .container { width: 80%; margin: 20px auto; }
+
+        .home-button { color: white; text-decoration: none; font-size: 16px; position: absolute; left: 20px; top: 15px; }
+
+        #map { height: 400px; border-radius: 5px; margin-bottom: 20px; }
+        .filters { display: flex; gap: 10px; margin-bottom: 10px; }
+        .filters input, .filters select { padding: 8px; font-size: 14px; }
+
+        .event { background: white; padding: 15px; margin-bottom: 10px; border-radius: 5px; display: flex; align-items: center; gap: 15px; }
+        .event h2 { margin: 0; color: #286181; }
+        .details { font-size: 14px; margin: 10px 0; }
+        .event-img { width: 120px; height: 80px; object-fit: cover; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="home-button">Home</a>
+        <h1>Upcoming Golf Events in Thailand</h1>
+    </header>
+
+    <div class="container">
+        <div id="map"></div>
+
+        <div class="filters">
+            <input type="text" id="search" placeholder="Search by name...">
+            <select id="location-filter">
+                <option value="">Filter by location</option>
+                <option value="Bangkok">Bangkok</option>
+                <option value="Hua Hin">Hua Hin</option>
+                <option value="Chiang Mai">Chiang Mai</option>
+                <option value="Phuket">Phuket</option>
+            </select>
+            <select id="date-filter">
+                <option value="">Filter by date</option>
+                <option value="2025-02-20">2025-02-20</option>
+                <option value="2025-03-15">2025-03-15</option>
+            </select>
+        </div>
+
+        <div id="event-list"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Events data
+            var events = [
+                { name: "Bangkok Open", location: "Bangkok", date: "2025-02-20", coords: [13.756, 100.576] },
+                { name: "Hua Hin Championship", location: "Hua Hin", date: "2025-03-15", coords: [12.589, 99.957] },
+                { name: "Phuket Golf Fest", location: "Phuket", date: "2025-02-20", coords: [8.017, 98.298] },
+                { name: "Chiang Mai Invitational", location: "Chiang Mai", date: "2025-03-15", coords: [18.744, 99.262] }
+            ];
+
+            // Display events list
+            function displayEvents(filteredEvents) {
+                let list = document.getElementById("event-list");
+                list.innerHTML = "";
+
+                filteredEvents.forEach(event => {
+                    list.innerHTML += `
+                        <div class="event">
+                            <img src="" alt="${event.name}" class="event-img">
+                            <div>
+                                <h2>${event.name}</h2>
+                                <p class="details">Location: ${event.location} | Date: ${event.date}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Initialize map
+            function initializeMap() {
+                var map = L.map('map').setView([13.8, 100.5], 7); // Default view (center of Thailand)
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                // Add markers for each event
+                events.forEach(event => {
+                    L.marker(event.coords).addTo(map)
+                        .bindPopup(`<b>${event.name}</b><br>Location: ${event.location}`);
+                });
+            }
+
+            // Filter events based on user input
+            function filterEvents() {
+                let searchQuery = document.getElementById("search").value.toLowerCase();
+                let locationFilter = document.getElementById("location-filter").value;
+                let dateFilter = document.getElementById("date-filter").value;
+
+                let filtered = events.filter(event => {
+                    return (
+                        (searchQuery === "" || event.name.toLowerCase().includes(searchQuery)) &&
+                        (locationFilter === "" || event.location === locationFilter) &&
+                        (dateFilter === "" || event.date === dateFilter)
+                    );
+                });
+
+                displayEvents(filtered);
+            }
+
+            // Event listeners for filters
+            document.getElementById("search").addEventListener("input", filterEvents);
+            document.getElementById("location-filter").addEventListener("change", filterEvents);
+            document.getElementById("date-filter").addEventListener("change", filterEvents);
+
+            // Initialize map and display events
+            initializeMap();
+            displayEvents(events);
+        });
+    </script>
+</body>
+</html>
