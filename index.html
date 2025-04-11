@@ -3,51 +3,638 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IO Sports Data</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <title>iO Clubhouse - Premium Golf Experiences in Thailand</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1a5276;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: #2e86c1;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(to right, #1e5631, #2e7d32);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #1a472a;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation Track */
+        .animation-track {
+            background-color: #e9f5e9;
+            height: 50px;
+            position: relative;
+            overflow: hidden;
+            border-top: 2px solid #d4e6d4;
+            border-bottom: 2px solid #d4e6d4;
+        }
+
+        .golf-ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            top: 15px;
+            left: -20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            animation: ballMove 8s linear infinite;
+        }
+
+        @keyframes ballMove {
+            0% {
+                left: -20px;
+                transform: rotate(0deg);
+            }
+            100% {
+                left: 100%;
+                transform: rotate(1080deg);
+            }
+        }
+
+        /* Main Sections */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: url('/api/placeholder/1200/500') center/cover no-repeat;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #2e7d32;
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #1b5e20;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+        }
+
+        /* Golf Experiences Section */
+        .section-title {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            font-size: 2.2rem;
+            color: #1a472a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #2e7d32;
+            margin: 0.8rem auto;
+        }
+
+        .experiences {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .experience-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .experience-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-image {
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .experience-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #1a472a;
+        }
+
+        .card-content p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Virtual Caddy Section */
+        .virtual-caddy {
+            background: linear-gradient(to right, #1a472a, #2e7d32);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .virtual-caddy h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .virtual-caddy p {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Featured Courses Section */
+        .featured-courses {
+            margin: 4rem 0;
+        }
+
+        .course-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 1rem 0;
+            gap: 1.5rem;
+        }
+
+        .course-slide {
+            min-width: 280px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-image {
+            height: 180px;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .course-info {
+            padding: 1rem;
+        }
+
+        .course-info h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            color: #1a472a;
+        }
+
+        .course-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .course-location {
+            display: flex;
+            align-items: center;
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        /* Affiliate Section */
+        .affiliate {
+            background-color: white;
+            padding: 2rem;
+            text-align: center;
+            margin: 3rem 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .affiliate h2 {
+            color: #1a472a;
+            margin-bottom: 1rem;
+        }
+
+        .affiliate p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+
+        .affiliate img {
+            max-width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a472a;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 3px;
+            background-color: #2e7d32;
+        }
+
+        .footer-section p {
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #ddd;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: #2e7d32;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+
+            .experiences {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>iO Clubhouse</h1>
+        <div class="container">
+            <h1>iO Clubhouse</h1>
+            <p>Premium Golf Experiences in Thailand</p>
+        </div>
     </header>
 
-    <!-- Luxury Destinations Section -->
-    <section class="luxury-destinations">
-        <div class="destination">
-            <a href="thaicourses.html">
-                <img src="assets/images/courses/golf carts.jpg" alt="Thailand golf courses">
-                <h2>Courses</h2>
-            </a>
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="thaicourses.html">Courses</a></li>
+                <li><a href="thairanges.html">Ranges</a></li>
+                <li><a href="thaievents.html">Events</a></li>
+                <li><a href="virtual-caddy.html">Virtual Caddy</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
         </div>
-        <div class="destination">
-            <a href="thairanges.html">
-                <img src="assets/images/ranges/driving range balls.jpg" alt="Thailand golf driving ranges">
-                <h2>Ranges</h2>
-            </a>
+    </nav>
+
+    <!-- Golf Ball Animation -->
+    <div class="animation-track">
+        <div class="golf-ball"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Experience Thailand's Finest Golf</h2>
+            <p>Discover world-class courses, premium ranges, and exclusive events across the Land of Smiles</p>
+            <a href="thaicourses.html" class="btn">Explore Courses</a>
         </div>
-        <div class="destination">
-            <a href="thaievents.html">
-                <img src="assets/images/events/golf events.jpg" alt="Thailand golf events">
-                <h2>Events</h2>
+    </section>
+
+    <!-- Golf Experiences Section -->
+    <section class="container">
+        <h2 class="section-title">Golf Experiences</h2>
+        <div class="experiences">
+            <div class="experience-card">
+                <div class="card-image">
+                    <img src="/api/placeholder/400/320" alt="Thailand golf courses">
+                </div>
+                <div class="card-content">
+                    <h3>Premium Courses</h3>
+                    <p>Explore Thailand's most stunning golf courses, from championship links to hidden gems.</p>
+                    <a href="thaicourses.html" class="btn">View Courses</a>
+                </div>
+            </div>
+
+            <div class="experience-card">
+                <div class="card-image">
+                    <img src="/api/placeholder/400/320" alt="Thailand golf driving ranges">
+                </div>
+                <div class="card-content">
+                    <h3>Top-Rated Ranges</h3>
+                    <p>Practice your swing at Thailand's finest driving ranges with state-of-the-art facilities.</p>
+                    <a href="thairanges.html" class="btn">Find Ranges</a>
+                </div>
+            </div>
+
+            <div class="experience-card">
+                <div class="card-image">
+                    <img src="/api/placeholder/400/320" alt="Thailand golf events">
+                </div>
+                <div class="card-content">
+                    <h3>Exclusive Events</h3>
+                    <p>Join tournaments, charity events, and networking opportunities for golf enthusiasts.</p>
+                    <a href="thaievents.html" class="btn">See Events</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Caddy Section -->
+    <section class="virtual-caddy">
+        <div class="container">
+            <h2>Virtual Caddy</h2>
+            <p>Enhance your game with our innovative Virtual Caddy service. Get personalized course insights, club recommendations, and detailed analytics to elevate your performance.</p>
+            <a href="virtual-caddy.html" class="btn">Try Virtual Caddy</a>
+        </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="container featured-courses">
+        <h2 class="section-title">Featured Golf Courses</h2>
+        <div class="course-slider">
+            <div class="course-slide">
+                <div class="course-image">
+                    <img src="/api/placeholder/400/320" alt="Black Mountain Golf Club">
+                </div>
+                <div class="course-info">
+                    <h3>Black Mountain Golf Club</h3>
+                    <p>Championship course hosting multiple professional tournaments</p>
+                    <div class="course-location">Hua Hin</div>
+                </div>
+            </div>
+
+            <div class="course-slide">
+                <div class="course-image">
+                    <img src="/api/placeholder/400/320" alt="Alpine Golf Club">
+                </div>
+                <div class="course-info">
+                    <h3>Alpine Golf Club</h3>
+                    <p>Challenging layout in picturesque surroundings</p>
+                    <div class="course-location">Bangkok</div>
+                </div>
+            </div>
+
+            <div class="course-slide">
+                <div class="course-image">
+                    <img src="/api/placeholder/400/320" alt="Siam Country Club">
+                </div>
+                <div class="course-info">
+                    <h3>Siam Country Club</h3>
+                    <p>Home to multiple LPGA tournaments</p>
+                    <div class="course-location">Pattaya</div>
+                </div>
+            </div>
+
+            <div class="course-slide">
+                <div class="course-image">
+                    <img src="/api/placeholder/400/320" alt="Red Mountain Golf Club">
+                </div>
+                <div class="course-info">
+                    <h3>Red Mountain Golf Club</h3>
+                    <p>Stunning views and dramatic elevation changes</p>
+                    <div class="course-location">Phuket</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Affiliate Section -->
+    <section class="container">
+        <div class="affiliate">
+            <h2>Exclusive Offers</h2>
+            <p>Check out our exclusive deals and affiliate links:</p>
+            <a href="https://one.exnesstrack.org/intl/en/a/irp0u0488v">
+                <img src="https://d3dpet1g0ty5ed.cloudfront.net/EN_Take_control_720x90.png" width="720" height="90" alt="Sponsor Banner">
             </a>
         </div>
     </section>
 
-    <section class="medium-image">
-        <img src="assets/images/events/golf ball.jpg" alt="Medium Image">
-    </section>
-
-
-    <section class="affiliate">
-        <h2>Exclusive Offers</h2>
-        <p>Check out our exclusive deals and affiliate links:</p>
-        <a href="https://one.exnesstrack.org/intl/en/a/irp0u0488v">
-          <img src="https://d3dpet1g0ty5ed.cloudfront.net/EN_Take_control_720x90.png" width="720" height="90" alt="" />
-        </a>
-    </section>
-
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 IO Sports Data - All Rights Reserved</p>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About iO Clubhouse</h3>
+                    <p>Premium golf experiences across Thailand, connecting golf enthusiasts with the finest courses, ranges, and events in the Kingdom.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="thaicourses.html">Golf Courses</a></li>
+                        <li><a href="thairanges.html">Driving Ranges</a></li>
+                        <li><a href="thaievents.html">Golf Events</a></li>
+                        <li><a href="virtual-caddy.html">Virtual Caddy</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: info@ioclubhouse.com</p>
+                    <p>Phone: +66 89 123 4567</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">f</a>
+                        <a href="#" aria-label="Instagram">i</a>
+                        <a href="#" aria-label="Twitter">t</a>
+                        <a href="#" aria-label="YouTube">y</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2024 iO Clubhouse - IO Sports Data - All Rights Reserved</p>
+            </div>
+        </div>
     </footer>
 </body>
 </html>

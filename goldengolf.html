@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Caddy - Hole Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        header {
+            background: linear-gradient(to right, #1e5631, #2e7d32);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        header p {
+            font-size: 14px;
+        }
+
+        .game-area {
+            background: white;
+            padding: 15px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hole-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .hole-stats {
+            font-weight: bold;
+        }
+
+        .game-status {
+            background: #1a472a;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .hole-view {
+            position: relative;
+            background: #e9f5e9;
+            height: 50vh;
+            min-height: 300px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #2e7d32;
+        }
+
+        .hole-image {
+            width: 100%;
+            height: 200%;
+            background-image: url('assets/images/courses/Hole 1 80 yards.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .ball-spot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 2px solid #1a472a;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s ease;
+        }
+
+        .ball-spot:hover {
+            transform: scale(1.3);
+        }
+
+        .ball-spot.tee {
+            border-color: #d32f2f;
+        }
+
+        .ball-spot.fairway {
+            border-color: #2e7d32;
+        }
+
+        .ball-spot.green {
+            border-color: #1976d2;
+        }
+
+        .player-ball {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .hole-cup {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border: 2px solid #d32f2f;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #2e7d32;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #1b5e20;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .caddy-advice {
+            background: #f9f9f9;
+            border-left: 5px solid #2e7d32;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .caddy-advice h3 {
+            margin-bottom: 10px;
+            color: #1a472a;
+        }
+
+        .club-recommendation {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .putt-line {
+            font-weight: bold;
+            color: #1976d2;
+        }
+
+        .shot-history {
+            background: #f0f8f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .shot-history h3 {
+            margin-bottom: 8px;
+            color: #1a472a;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .shot-list {
+            list-style: none;
+        }
+
+        .shot-list li {
+            padding: 6px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .shot-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-box {
+            background: #e9f2f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #90caf9;
+            font-size: 14px;
+        }
+
+        .info-box h3 {
+            color: #0d47a1;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .legend-text {
+            font-size: 12px;
+        }
+
+        .red {
+            background-color: #d32f2f;
+            border: 1px solid #b71c1c;
+        }
+
+        .green {
+            background-color: #2e7d32;
+            border: 1px solid #1b5e20;
+        }
+
+        .blue {
+            background-color: #1976d2;
+            border: 1px solid #0d47a1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 300px;
+            width: 80%;
+            text-align: center;
+        }
+
+        .modal h2 {
+            color: #1a472a;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            padding: 10px 20px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            .hole-view {
+                height: 40vh;
+                min-height: 250px;
+            }
+
+            .ball-spot {
+                width: 16px;
+                height: 16px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 8px 12px;
+            }
+
+            .shot-history {
+                max-height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Virtual Caddy</h1>
+            <p>Hole 1 Simulation</p>
+        </header>
+
+        <div class="game-area">
+            <div class="hole-info">
+                <div class="hole-stats">
+                    <span>Hole 1</span> |
+                    <span>Par 3</span> |
+                    <span>80 yards</span>
+                </div>
+                <div>
+                    <span>Shots: <span id="shot-counter">0</span></span>
+                </div>
+            </div>
+
+            <div class="game-status" id="game-status">
+                Press "Start Round" to begin playing
+            </div>
+
+            <div class="hole-view">
+                <div class="hole-image">
+                    <!-- Tee spots - red border -->
+                    <div class="ball-spot tee" style="left: 25%; top: 80%;" data-distance="80" data-section="tee"></div>
+                    <div class="ball-spot tee" style="left: 40%; top: 78%;" data-distance="80" data-section="tee"></div>
+                    <div class="ball-spot tee" style="left: 60%; top: 79%;" data-distance="80" data-section="tee"></div>
+
+                    <!-- Fairway spots - green border -->
+                    <div class="ball-spot fairway" style="left: 20%; top: 50%;" data-distance="50" data-section="fairway"></div>
+                    <div class="ball-spot fairway" style="left: 35%; top: 55%;" data-distance="45" data-section="fairway"></div>
+                    <div class="ball-spot fairway" style="left: 50%; top: 60%;" data-distance="40" data-section="fairway"></div>
+                    <div class="ball-spot fairway" style="left: 65%; top: 55%;" data-distance="35" data-section="fairway"></div>
+                    <div class="ball-spot fairway" style="left: 80%; top: 50%;" data-distance="30" data-section="fairway"></div>
+
+                    <!-- Green spots - blue border -->
+                    <div class="ball-spot green" style="left: 30%; top: 25%;" data-distance="15" data-section="green" data-break="slight right"></div>
+                    <div class="ball-spot green" style="left: 40%; top: 15%;" data-distance="10" data-section="green" data-break="downhill"></div>
+                    <div class="ball-spot green" style="left: 50%; top: 30%;" data-distance="8" data-section="green" data-break="left to right"></div>
+                    <div class="ball-spot green" style="left: 60%; top: 25%;" data-distance="5" data-section="green" data-break="straight uphill"></div>
+                    <div class="hole-cup" style="left: 50%; top: 20%;"></div>
+                    <div class="ball-spot green" style="left: 50%; top: 20%;" data-distance="0" data-section="green" data-break="in the hole"></div>
+
+                    <div class="player-ball" id="player-ball"></div>
+                </div>
+            </div>
+
+            <div class="caddy-advice" id="caddy-advice">
+                <h3>Virtual Caddy Says:</h3>
+                <p>Welcome to Hole 1! This is a short par 3 at 80 yards. Once you start your round, select where your ball lands after each shot.</p>
+                <p>Club recommendation will appear here.</p>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" class="btn btn-primary">Start Round</button>
+                <button id="reset-btn" class="btn btn-secondary" disabled>Reset Round</button>
+            </div>
+
+            <div class="shot-history">
+                <h3>Shot History</h3>
+                <ul class="shot-list" id="shot-list">
+                    <!-- Shot history will be added here -->
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>Interactive Guide</h3>
+                <p>Select a ball position after each shot to simulate your progress through the hole. The Virtual Caddy will provide club recommendations and putting advice based on your ball's position.</p>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color red"></div>
+                        <span class="legend-text">Tee Box</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color green"></div>
+                        <span class="legend-text">Fairway</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color blue"></div>
+                        <span class="legend-text">Green</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="completion-modal">
+        <div class="modal-content">
+            <h2>Hole Complete!</h2>
+            <p>You completed the hole in <span id="final-shots">0</span> shots.</p>
+            <button class="close-btn" id="close-modal">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            started: false,
+            currentSection: 'tee',
+            shotCount: 0,
+            distance: 80,
+            holeCompleted: false
+        };
+
+        // Club recommendations based on distance
+        const clubRecommendations = {
+            '0-3': 'Putter',
+            '4-10': 'Putter or Chip with Wedge',
+            '11-20': 'Pitching Wedge',
+            '21-40': 'Gap Wedge or Pitching Wedge',
+            '41-60': 'Sand Wedge or Gap Wedge',
+            '61-80': '9 Iron or Pitching Wedge',
+            '81-100': '8 Iron or 9 Iron',
+            '101-120': '7 Iron or 8 Iron',
+            '121-140': '6 Iron or 7 Iron',
+            '141-160': '5 Iron or 6 Iron',
+            '161-180': '4 Iron or 5 Iron',
+            '181-200': '3 Iron or 4 Iron',
+            '201-220': '3 Wood or 5 Wood',
+            '221+': 'Driver or 3 Wood'
+        };
+
+        // Dom Elements
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const gameStatus = document.getElementById('game-status');
+        const caddyAdvice = document.getElementById('caddy-advice');
+        const shotCounter = document.getElementById('shot-counter');
+        const shotList = document.getElementById('shot-list');
+        const playerBall = document.getElementById('player-ball');
+        const completionModal = document.getElementById('completion-modal');
+        const finalShots = document.getElementById('final-shots');
+        const closeModal = document.getElementById('close-modal');
+        const ballSpots = document.querySelectorAll('.ball-spot');
+
+        // Helper Functions
+        function getClubRecommendation(distance) {
+            for (const range in clubRecommendations) {
+                const [min, max] = range.split('-');
+                if (max === '+') {
+                    if (distance >= parseInt(min)) {
+                        return clubRecommendations[range];
+                    }
+                } else if (distance >= parseInt(min) && distance <= parseInt(max)) {
+                    return clubRecommendations[range];
+                }
+            }
+            return 'Wedge'; // Default fallback
+        }
+
+        function updateGameStatus(message) {
+            gameStatus.textContent = message;
+        }
+
+        function updateCaddyAdvice(distance, section, breakLine) {
+            let advice = '';
+
+            if (section === 'tee') {
+                const club = getClubRecommendation(distance);
+                advice = `
+                    <h3>Virtual Caddy Says:</h3>
+                    <p>You're at the tee box. This is a short par 3 at 80 yards to the pin.</p>
+                    <p><span class="club-recommendation">Recommended club: ${club}</span></p>
+                    <p>Select where your ball lands after your tee shot.</p>
+                `;
+            } else if (section === 'fairway') {
+                const club = getClubRecommendation(distance);
+                advice = `
+                    <h3>Virtual Caddy Says:</h3>
+                    <p>Your ball is in the fairway, ${distance} yards from the pin.</p>
+                    <p><span class="club-recommendation">Recommended club: ${club}</span></p>
+                    <p>Select where your ball lands after your next shot.</p>
+                `;
+            } else if (section === 'green') {
+                if (distance === 0) {
+                    advice = `
+                        <h3>Virtual Caddy Says:</h3>
+                        <p>Great job! You made it in the hole!</p>
+                    `;
+                } else {
+                    advice = `
+                        <h3>Virtual Caddy Says:</h3>
+                        <p>Your ball is on the green, ${distance} feet from the hole.</p>
+                        <p><span class="putt-line">Putt reads: ${breakLine || 'straight'}</span></p>
+                        <p>Take your time with the putt and read the green carefully.</p>
+                    `;
+                }
+            }
+
+            caddyAdvice.innerHTML = advice;
+        }
+
+        function addShotToHistory(shotNumber, section, distance, breakLine) {
+            const shotItem = document.createElement('li');
+
+            if (section === 'green') {
+                if (distance === 0) {
+                    shotItem.textContent = `Shot #${shotNumber}: In the hole!`;
+                } else {
+                    shotItem.textContent = `Shot #${shotNumber}: On green (${distance} ft, ${breakLine})`;
+                }
+            } else {
+                const club = getClubRecommendation(distance);
+                shotItem.textContent = `Shot #${shotNumber}: ${club} (${distance} yards to pin)`;
+            }
+
+            shotList.appendChild(shotItem);
+        }
+
+        function showPlayerBall(x, y) {
+            playerBall.style.left = x;
+            playerBall.style.top = y;
+            playerBall.style.display = 'block';
+        }
+
+        function completeHole() {
+            gameState.holeCompleted = true;
+            finalShots.textContent = gameState.shotCount;
+            completionModal.style.display = 'flex';
+            updateGameStatus('Hole completed!');
+        }
+
+        function resetGame() {
+            gameState = {
+                started: false,
+                currentSection: 'tee',
+                shotCount: 0,
+                distance: 80,
+                holeCompleted: false
+            };
+
+            shotCounter.textContent = '0';
+            shotList.innerHTML = '';
+            playerBall.style.display = 'none';
+            updateGameStatus('Press "Start Round" to begin playing');
+            updateCaddyAdvice(80, 'tee');
+
+            startBtn.disabled = false;
+            resetBtn.disabled = true;
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', () => {
+            if (!gameState.started) {
+                gameState.started = true;
+                updateGameStatus('Select where your ball lands after your tee shot');
+                updateCaddyAdvice(gameState.distance, 'tee');
+                startBtn.disabled = true;
+                resetBtn.disabled = false;
+            }
+        });
+
+        resetBtn.addEventListener('click', resetGame);
+
+        closeModal.addEventListener('click', () => {
+            completionModal.style.display = 'none';
+            resetGame();
+        });
+
+        ballSpots.forEach(spot => {
+            spot.addEventListener('click', () => {
+                if (!gameState.started || gameState.holeCompleted) return;
+
+                const section = spot.dataset.section;
+                const distance = parseInt(spot.dataset.distance);
+                const breakLine = spot.dataset.break;
+
+                // Update ball position
+                const rect = spot.getBoundingClientRect();
+                const containerRect = spot.parentElement.getBoundingClientRect();
+                const x = ((rect.left + rect.width/2) - containerRect.left) + 'px';
+                const y = ((rect.top + rect.height/2) - containerRect.top) + 'px';
+                showPlayerBall(x, y);
+
+                // Increment shot count
+                gameState.shotCount++;
+                shotCounter.textContent = gameState.shotCount;
+
+                // Add to shot history
+                addShotToHistory(gameState.shotCount, section, distance, breakLine);
+
+                // Update game state
+                gameState.distance = distance;
+                gameState.currentSection = section;
+
+                // If hole completed
+                if (distance === 0 && section === 'green') {
+                    completeHole();
+                    return;
+                }
+
+                // Update UI for next shot
+                if (section === 'green') {
+                    updateGameStatus(`Shot #${gameState.shotCount} complete. ${distance} feet to hole`);
+                } else {
+                    updateGameStatus(`Shot #${gameState.shotCount} complete. ${distance} yards to hole`);
+                }
+                updateCaddyAdvice(distance, section, breakLine);
+            });
+        });
+    </script>
+</body>
+</html>
